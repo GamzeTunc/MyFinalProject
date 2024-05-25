@@ -1,5 +1,5 @@
-﻿using Entities.Abstract;
-using Entities.Concrete;
+﻿
+using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Abstract
+namespace Core.DataAccess
 {
     //generic constraint(generic kısıtlama) yani T lere sadece Entities in altındaki class tiplerinin dönmesi için yapcaz ki IProductDal da mesala int tanımlayamasın
     //class:referans tip olabilir demek class olcak değil
