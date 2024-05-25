@@ -14,7 +14,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\Mssqllocaldb;Database=master;Trusted_Connection=true");//sqlserver a nasıl bağlanacağın yazcak başına "@" koymak \ ı \ olarak algıla NOT optionsBuilder.UseSqlServer(@"Server=175.45.2.12") gerçek projede böyle ip belirtilir.
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\Mssqllocaldb;Database=MyFinalProject;Trusted_Connection=true");//sqlserver a nasıl bağlanacağın yazcak başına "@" koymak \ ı \ olarak algıla NOT optionsBuilder.UseSqlServer(@"Server=175.45.2.12") gerçek projede böyle ip belirtilir.
         }
         //hangi nesnenin hangisine karşılık geleceğini de aşağıdan belirliyoruz DbSet<Product> burası projemde pluşturduğum class
         public DbSet<Product> Products { get; set; }
