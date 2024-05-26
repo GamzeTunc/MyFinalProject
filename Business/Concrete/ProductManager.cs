@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
@@ -19,18 +21,37 @@ public ProductManager(IProductDal productDal) //ProductManager new lendiğinde �
             _productDal = productDal;
         }
 
-        public List<Product> GetAll()
+        public IResults Add(Product product)//public void Add(Product product)
+        {
+            //business codes (eğer böyleyse eğer şöyleyse diye buraya yazılır) geçerliyse ekleriz
+
+            if(product.ProductName.Length<2)
+            {
+                return new ErrorResult(Messages.ProductNameInValid);
+            }
+
+            //void bişey döndürmez ama ben işlem başarılıysa işlem başarılı diye bişey döndürmek istiyorum result diye class ekler onunla ekleme yaparım
+            _productDal.Add(product);
+            return new SuccessResult(Messages.ProductAdded);//IResults interface i result taki metodlara sahip olduğu için kullanılabilir. //SuccessResults olduğunda zaten true ki biz bu klasa yolluyoz successaresult ta kullanırız o yüzden true yollayıp mesaj yollamamayı
+        }
+        
+        public IDataResult<List<Product>> GetAll()
         {
             //iş kodları
             //if else ler
             //yrtkisi var mı 
             //bunlar geçince data access e veriyi verebilirsin ürünleri gösterebilirsin diyor
-            return _productDal.GetAll();
+            return new DataResult(_productDal.GetAll());
         }
 
         public List<Product> GetAllByCategoryId(int id)
         {
             return _productDal.GetAll(p => p.CategoryId == id);
+        }
+
+        public Product GetById(int productId)
+        {
+            return _productDal.Get(p => p.ProductId == productId);
         }
 
         public List<Product> GetByUnitPrice(decimal min, decimal max)
