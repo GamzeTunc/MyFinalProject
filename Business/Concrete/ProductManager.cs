@@ -41,7 +41,12 @@ public ProductManager(IProductDal productDal) //ProductManager new lendiğinde �
             //if else ler
             //yrtkisi var mı 
             //bunlar geçince data access e veriyi verebilirsin ürünleri gösterebilirsin diyor
-            return new DataResult(_productDal.GetAll());
+
+            if (DateTime.Now.Hour==22)//sistemin saatini verir pc de saat 22 old. ErrorDataResult çalışcak
+            {
+                return new ErrorDataResult();
+            }
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),true,"Ürünler Listelendi");
         }
 
         public List<Product> GetAllByCategoryId(int id)
