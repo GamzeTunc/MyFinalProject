@@ -1,15 +1,21 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace Business.Concrete
 {
@@ -20,15 +26,10 @@ public ProductManager(IProductDal productDal) //ProductManager new lendiğinde �
         {
             _productDal = productDal;
         }
-
+        [ValidationAspect(typeof(ProductValidator))]
         public IResults Add(Product product)//public void Add(Product product)
         {
-            //business codes (eğer böyleyse eğer şöyleyse diye buraya yazılır) geçerliyse ekleriz
-
-            if(product.ProductName.Length<2)
-            {
-                return new ErrorResult(Messages.ProductNameInValid);
-            }
+            ValidationTool.Validate(new ProductValidator(), product);
 
             //void bişey döndürmez ama ben işlem başarılıysa işlem başarılı diye bişey döndürmek istiyorum result diye class ekler onunla ekleme yaparım
             _productDal.Add(product);
