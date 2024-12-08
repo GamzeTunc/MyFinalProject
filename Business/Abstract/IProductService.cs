@@ -18,5 +18,6 @@ namespace Business.Abstract
         IDataResult<Product> GetById(int productId);//product döndürür. tek birşey için kullanılır ürünün detayının getirilmesi gibi yani
                                        // void Add(Product product);//void birşey döndürmüyor.
         IResults Add(Product product);
+        IResults Update(Product product);
     }
 }

@@ -25,10 +25,28 @@ builder.Host.UseServiceProviderFactory(services => new AutofacServiceProviderFac
 
 
 
+// CORS Policy ekle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Angular projesinin çalýþtýðý URL
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
+
 
 
 
 var app = builder.Build();
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -36,6 +54,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+// Use CORS Policy
+app.UseCors("AllowSpecificOrigins");
+
+
+
 
 app.UseHttpsRedirection();
 

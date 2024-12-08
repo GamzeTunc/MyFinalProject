@@ -20,6 +20,8 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll() //methodun ismi ,string döndürüyo
         {
+           Thread.Sleep( 1000);
+
             //IProductService productService = new ProductManager(new EfProductDal()); bu bağımlı yapar o yüzden constructor injection kullanırız
             var result = _productService.GetAll();
             
@@ -34,6 +36,17 @@ namespace WebAPI.Controllers
         public IActionResult GetById(int id) //sadece bir ürünü çekmek için kullanırız
         {
             var result = _productService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getbycategory")]
+        public IActionResult GetByCategory(int categoryId) //sadece bir ürünü çekmek için kullanırız
+        {
+            var result = _productService.GetAllByCategoryId(categoryId);
             if (result.Success)
             {
                 return Ok(result);
