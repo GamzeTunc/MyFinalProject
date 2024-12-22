@@ -31,10 +31,10 @@ namespace Business.Concrete
         }
 
         //select * from categories where CategoryId=3
-        public Category GetById(int CategoryId)
+        public IDataResult<Category> GetById(int CategoryId)
         {
             //iş kodları
-            return _categoryDal.Get(c => c.CategoryId == CategoryId);
+            return new SuccessDataResult<Category> (_categoryDal.Get(c => c.CategoryId == CategoryId));
         }
     }
 }

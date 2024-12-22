@@ -22,7 +22,7 @@ namespace Business.DependencyResolvers.AutoFac
             builder.RegisterType<ProductManager>().As<IProductService>().SingleInstance(); //bir tane örnek oluşturur sadece çağırmalar için kullanırız data saklamayız içinde 
             //builder.RegisterType<ProductManager>().As<IProductService>(); // IProductService istendiğinde ProductManager new le yani örneği instance yi ver
             builder.RegisterType<EfProductDal>().As<IProductDal>().SingleInstance();
-            builder.RegisterType<FileLogger>().As<ILogger>().SingleInstance();
+
 
             builder.RegisterType<CategoryManager>().As<ICategoryService>().SingleInstance();
             builder.RegisterType<EfCategoryDal>().As<ICategoryDal>().SingleInstance();

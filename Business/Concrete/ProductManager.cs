@@ -4,6 +4,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -23,31 +24,33 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         IProductDal _productDal; //injection yaparız bu sayede ne memory ne entity leri kullanmıycaz
-
-        public ProductManager(IProductDal productDal) //ProductManager new lendiğinde çalışır
+        ICategoryService _categoryService;
+        
+        public ProductManager(IProductDal productDal,ICategoryService categoryService) //ProductManager new lendiğinde çalışır
         {
             _productDal = productDal;
-
+            _categoryService = categoryService;
+            
         }
 
-        //[SecuredOperation(roles:"product.add.admin")] bu hocada vardı ben yazmamışım
+        //[SecuredOperation(roles:"product.add.admin")]bizim verdiğimiz bir Aspect ismi operation diyince metoddur. admin olacak veya product add 
         [ValidationAspect(typeof(ProductValidator))]
         //[CacheRemoveAspect(pattern:"IProductService.Get")] bu hocada vardı ben yazmamışım
         public IResults Add(Product product)//public void Add(Product product)
         {
-            var dene = CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success;
-            if (dene==true)
-            {
-                if (CheckIfProductNameExists(product.ProductName).Success) { 
 
-                //void bişey döndürmez ama ben işlem başarılıysa işlem başarılı diye bişey döndürmek istiyorum result diye class ekler onunla ekleme yaparım.
-                _productDal.Add(product);
-                return new SuccessResult(Messages.ProductAdded);//IResults interface i result taki metodlara sahip olduğu için kullanılabilir. //SuccessResults olduğunda zaten true ki biz bu klasa yolluyoz successaresult ta kullanırız o yüzden true yollayıp mesaj yollamamayı
+            IResults result= BusinessRules.Run(CheckIfProductNameExists(product.ProductName), 
+                CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfCategoryLimitExceded());
+
+            if (result != null) //result boş değilse
+            {
+                return result; //result ı yani hatayı döndür
             }
-                
-                
-            }
-            return new ErrorResult();
+            //void bişey döndürmez ama ben işlem başarılıysa işlem başarılı diye bişey döndürmek istiyorum result diye class ekler onunla ekleme yaparım.
+            _productDal.Add(product);
+            return new SuccessResult(Messages.ProductAdded);//IResults interface i result taki metodlara sahip olduğu için kullanılabilir. //SuccessResults olduğunda zaten true ki biz bu klasa yolluyoz successaresult ta kullanırız o yüzden true yollayıp mesaj yollamamayı
+
+           
         }
 
         public IDataResult<List<Product>> GetAll()
@@ -122,6 +125,17 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.ProductNameAlreadyExists);
 
 
+            }
+            return new SuccessResult();
+        }
+
+
+        private IResults CheckIfCategoryLimitExceded()
+        {
+            var result = _categoryService.GetAll();
+            if(result.Data.Count>15)
+            {
+                return new ErrorResult(Messages.CategoryLimitExceded);
             }
             return new SuccessResult();
         }

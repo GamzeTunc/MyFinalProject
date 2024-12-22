@@ -12,7 +12,7 @@ namespace Business.Abstract
     {
         //List<Category> GetAll();
         IDataResult<List<Category>> GetAll();
-        Category GetById(int CategoryId);
+        IDataResult<Category>  GetById(int CategoryId);
 
     }
 }
